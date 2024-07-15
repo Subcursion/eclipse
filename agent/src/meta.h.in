@@ -1,0 +1,2 @@
+#define VERSION_MAJOR @eclipse_VERSION_MAJOR@
+#define VERSION_MINOR @eclipse_VERSION_MINOR@
