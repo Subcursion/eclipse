@@ -1,16 +1,4 @@
-from typing import Callable
-
-__input_listeners: list[Callable[[str], None]] = []
-
-
-def add_input_listener(listener: Callable[[str], None]):
-    if listener in __input_listeners:
-        __input_listeners.add(listener)
-
-
-def remove_input_listener(listener: Callable[[str], None]):
-    if listener in __input_listeners:
-        __input_listeners.remove(listener)
+import sys
 
 
 class _Getch:
@@ -31,21 +19,22 @@ class _Getch:
 
 class _GetchUnix:
     def __init__(self):
-        pass
+        import termios
+
+        self.old_settings = termios.tcgetattr(sys.stdin.fileno())
 
     def __call__(self):
-        import sys
         import termios
         import tty
 
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
+        tty.setcbreak(sys.stdin, when=tty.TCSANOW)
+        ch = None
         try:
-            tty.setcbreak(sys.stdin.fileno(), when=termios.TCSAFLUSH)
             ch = sys.stdin.read(1)
         finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, self.old_settings)
         return ch
 
 
+getch_raw = _Getch()
 getch = _Getch()

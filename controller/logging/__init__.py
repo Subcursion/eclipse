@@ -1,9 +1,6 @@
-from .. import term
+import sys
 
 
-def log_to_main_term(*args, **kargs):
-    term.save_cursor_position()
-    term.use_alternate_screen_buffer(False)
-    print(*args, **kargs)
-    term.use_alternate_screen_buffer()
-    term.restore_cursor_position()
+def elog(*args, **kargs):
+    file = kargs.pop("file", sys.stderr)
+    print(*args, **kargs, file=file)

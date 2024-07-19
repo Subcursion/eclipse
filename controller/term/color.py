@@ -66,31 +66,31 @@ def sgr(*n: str | Color_4Bit | Style | list[str | Color_4Bit | Style]) -> str:
 
 
 def reset() -> str:
-    return Style.RESET
+    return str(Style.RESET)
 
 
 def fg_4bit(fg: Color_4Bit) -> str:
-    return fg
+    return str(fg)
 
 
 def bg_4bit(bg: Color_4Bit) -> str:
-    return bg
+    return str(bg)
 
 
 def color_4bit(fg, bg) -> str:
-    return fg + ARG_SEP + bg
+    return str(fg) + ARG_SEP + str(bg)
 
 
 def fg_8bit(n) -> str:
-    return FG_8BIT + ARG_SEP + BIT_8 + ARG_SEP + n
+    return FG_8BIT + ARG_SEP + BIT_8 + ARG_SEP + str(n)
 
 
 def bg_8bit(n) -> str:
-    return BG_8BIT + ARG_SEP + BIT_8 + ARG_SEP + n
+    return BG_8BIT + ARG_SEP + BIT_8 + ARG_SEP + str(n)
 
 
 def underline_8bit(n) -> str:
-    return UNDERLINE_8BIT + ARG_SEP + BIT_8 + ARG_SEP + n
+    return UNDERLINE_8BIT + ARG_SEP + BIT_8 + ARG_SEP + str(n)
 
 
 def color_8bit(fgn, bgn) -> str:
@@ -98,12 +98,42 @@ def color_8bit(fgn, bgn) -> str:
 
 
 def fg_color(r, g, b) -> str:
-    return FG_8BIT + ARG_SEP + BIT_24 + ARG_SEP + r + ARG_SEP + g + ARG_SEP + b
+    return (
+        FG_8BIT
+        + ARG_SEP
+        + BIT_24
+        + ARG_SEP
+        + str(r)
+        + ARG_SEP
+        + str(g)
+        + ARG_SEP
+        + str(b)
+    )
 
 
 def bg_color(r, g, b) -> str:
-    return BG_8BIT + ARG_SEP + BIT_24 + ARG_SEP + r + ARG_SEP + g + ARG_SEP + b
+    return (
+        BG_8BIT
+        + ARG_SEP
+        + BIT_24
+        + ARG_SEP
+        + str(r)
+        + ARG_SEP
+        + str(g)
+        + ARG_SEP
+        + str(b)
+    )
 
 
 def underline_color(r, g, b) -> str:
-    return UNDERLINE_8BIT + ARG_SEP + BIT_24 + ARG_SEP + r + ARG_SEP + g + ARG_SEP + b
+    return (
+        UNDERLINE_8BIT
+        + ARG_SEP
+        + BIT_24
+        + ARG_SEP
+        + str(r)
+        + ARG_SEP
+        + str(g)
+        + ARG_SEP
+        + str(b)
+    )

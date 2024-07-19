@@ -1,6 +1,9 @@
 import signal
+import sys
+import termios
 import typing
 
+from ..logging import elog
 from ..types import ANSI_Enum
 from .input import getch
 
@@ -9,20 +12,20 @@ CSI = ESCAPE + "["
 
 ARG_SEP = ";"
 
-__resize_listeners: list[typing.Callable[[int, int], None]] = []
+__resize_listeners: list[typing.Callable[[tuple[int, int]], None]] = []
 
 __old_handler = None
 
 
-def __update_term_size(signum, frame):
+def __handle_sigwinch(signum, frame):
     if __old_handler:
         __old_handler(signum, frame)
-    size = get_terminal_size()
+    __size = get_terminal_size()
     for listener in __resize_listeners:
-        listener(size)
+        listener(__size)
 
 
-__old_handler = signal.signal(signal.SIGWINCH, __update_term_size)
+__old_handler = signal.signal(signal.SIGWINCH, __handle_sigwinch)
 
 
 def print_raw(
@@ -67,18 +70,22 @@ def set_cursor_position(row: int = 1, col: int = 1):
 
 
 def get_cursor_position() -> tuple[int, int]:
-    from ..logging import log_to_main_term
 
     print_raw(CSI + "6n")
 
     esc = getch()
     if esc != ESCAPE:
-        log_to_main_term("Expected escape return code, got", ord(esc), esc)
+        elog("Expected escape char, got", ord(esc))
         return (-1, -1)
+    elog("Grabbed escape")
+
     bracket = getch()
+
     if bracket != "[":
-        log_to_main_term("Expected bracket return code, got", ord(bracket), bracket)
+        elog("Expected left bracket, got", ord(bracket))
         return (-1, -1)
+
+    elog("Grabbed bracket")
 
     n = getch()
     curr = getch()
@@ -86,21 +93,21 @@ def get_cursor_position() -> tuple[int, int]:
         n += curr
         curr = getch()
 
+    elog("Parsed n", n)
+
     m = getch()
     curr = getch()
     while curr != "R":
         m += curr
         curr = getch()
 
+    elog("parsed m", m)
+
     return (int(n), int(m))
 
 
 def get_terminal_size() -> tuple[int, int]:
-    save_cursor_position()
-    set_cursor_position(9999, 9999)
-    h, w = get_cursor_position()
-    restore_cursor_position()
-    return (h, w)
+    return termios.tcgetwinsize(sys.stdin.fileno())
 
 
 class EraseMode(ANSI_Enum):
