@@ -76,3 +76,6 @@ __pycache__
 .venv
 .env
 .flake8
+
+# logs
+*.log

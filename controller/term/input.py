@@ -1,4 +1,40 @@
 import sys
+import threading
+import string
+from typing import Callable
+
+from .. import term
+
+
+class InputThread(threading.Thread):
+
+    def __init__(self):
+        super().__init__(name="ECLInputT", daemon=False)
+
+    def run(self):
+        c = None
+        while True:
+            c = getch()
+            if c == term.ESCAPE:
+                # read bracket
+                b = getch()
+                if b != "[":
+                    pass
+                # read until a capital letter
+                c = getch()
+                var = ""
+                while c not in string.ascii_uppercase:
+                    var += c
+                    c = getch()
+                var = var.split(";")
+
+
+def listen_for(*seq: str | bytes | list[str | bytes]):
+    pass
+
+
+def listen():
+    pass
 
 
 class _Getch:

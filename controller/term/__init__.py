@@ -7,7 +7,7 @@ from ..logging import elog
 from ..types import ANSI_Enum
 from .input import getch
 
-ESCAPE = chr(0x1B)
+ESCAPE = '\x1b'
 CSI = ESCAPE + "["
 
 ARG_SEP = ";"
@@ -68,6 +68,8 @@ def move_cursor(direction: CursorDirection, n: int = 1):
 def set_cursor_position(row: int = 1, col: int = 1):
     print_raw(CSI + str(row) + ARG_SEP + str(col) + "H")
 
+def set_cursor_column(col: int = 1):
+    print_raw(CSI + str(col) + 'G')
 
 def get_cursor_position() -> tuple[int, int]:
 

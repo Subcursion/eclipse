@@ -18,8 +18,8 @@ def getch_select():
         c = fd.read(1)
     for fd in xlist:
         print(fd, "had an error")
-    return c
-
+    return c        
+    
 
 def getch_poll():
     c = None
@@ -47,32 +47,51 @@ def getch_epoll():
     return c
 
 
+def get_cursor_position_read():
+    print(chr(0x1B), "[6n", end="", sep="", flush=True)
+    esc, bracket = char_read(), char_read()
+
+    n = ''
+    c = char_read()
+    while c != ';':
+        n += c
+        c = char_read()
+    
+    m = ''
+    c = char_read()
+    while c != 'R':
+        m += c
+        c = char_read()
+
+    n = int(n)
+    m = int(m)
+    return (n, m)
+
+def get_cursor_position_termios():
+    return termios.tcgetwinsize(sys.stdin.fileno())       
+
 def handle_sigwinc(signum, frame):
-    ws_row, ws_col = termios.tcgetwinsize(sys.stdin.fileno())
+    ws_row, ws_col = pos_read()
     print("signal: rows", ws_row, "cols", ws_col)
 
+char_read = getch
+pos_read = get_cursor_position_read
 
 old_settings = termios.tcgetattr(sys.stdin.fileno())
 tty.setcbreak(sys.stdin.fileno(), when=termios.TCSANOW)
 
 signal.signal(signal.SIGWINCH, handle_sigwinc)
 
-print("Signal registered; getting cursor position")
-
 print(chr(0x1B), "[6n", end="", sep="", flush=True)
 
-print("Requested, setting c break")
-
-ws_row, ws_col = termios.tcgetwinsize(sys.stdin.fileno())
+ws_row, ws_col = pos_read()
 
 print("rows", ws_row, "cols", ws_col)
-
-termios.tcsetwinsize(sys.stdin.fileno(), (30, 30))
 
 print("entering main c loop")
 while True:
     try:
-        c = getch_select()
+        c = char_read()
         print(f"{c} ({ord(c)}) was pressed!", flush=True)
     except KeyboardInterrupt:
         break

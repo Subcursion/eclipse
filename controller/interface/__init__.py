@@ -5,6 +5,8 @@ from ..logging import elog
 from ..term import input
 from ..term.color import fg_color, reset, sgr
 
+from .components.options import DrawOptionList
+
 __size = (0, 0)
 
 
@@ -29,12 +31,12 @@ def show_interface():
 
     while True:
         __redraw()
-        try:
-            input.getch()
-        except KeyboardInterrupt:
-            term.erase_display(term.EraseMode.All)
-            term.use_alternate_screen_buffer(False)
-            break
+
+
+def close_interface():
+    term.erase_display(term.EraseMode.All)
+    term.use_alternate_screen_buffer(False)
+    exit(0)
 
 
 def __redraw():
@@ -44,12 +46,24 @@ def __redraw():
     term.erase_display(term.EraseMode.All)
 
     color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-    term.print_raw(sgr(fg_color(*color)))
 
     title = "Welcome to ECLIPSE"
     start_pos = (__size[1] // 2) - (len(title) // 2)
     term.set_cursor_position(row=1, col=start_pos)
     term.print_raw(sgr(fg_color(*color)), title, sgr(reset()))
-    term.set_cursor_position(row=3, col=start_pos)
-    term.print_raw(__size)
-    term.set_cursor_position()
+
+    term.move_cursor(term.CursorDirection.Down, 2)
+    term.set_cursor_column()
+
+    DrawOptionList(
+        [
+            ("Agent Management", lambda: elog("First option selected")),
+            ("Listeners", lambda: elog("Second option selected")),
+            ("Settings", lambda: elog("Third option selected")),
+            ("Agent Management", lambda: elog("First option selected")),
+            ("Listeners", lambda: elog("Second option selected")),
+            ("Settings", lambda: elog("Third option selected")),
+            ("Quit", close_interface),
+        ],
+        wrap=False,
+    )
