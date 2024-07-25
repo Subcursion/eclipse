@@ -1,11 +1,16 @@
 from traceback import format_exc
 
+import logging
+
 from . import term
-from .logging import elog
 from .interface import interface
 from .term.input import input_thread
+from .logging import setup_loggers
 
 # parse env args and command line flags
+
+setup_loggers()
+logger = logging.getLogger(__name__)
 
 # start interface loop
 try:
@@ -13,9 +18,9 @@ try:
     interface.setup_screen()
     interface.render()
 except Exception as e:
-    elog("There was an error during runtime.")
-    elog(format_exc(e))
+    logger.error("There was an error during runtime", exc_info=e, stack_info=True)
 except KeyboardInterrupt:
-    elog("Received ctrl+c")
+    logging.error("Received SIGTERM")
 finally:
+    input_thread.stop()
     interface.restore_screen()

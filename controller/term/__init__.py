@@ -5,9 +5,8 @@ import typing
 
 from ..logging import elog
 from ..types import ANSI_Enum
-from .input import getch
 
-ESCAPE = '\x1b'
+ESCAPE = "\x1b"
 CSI = ESCAPE + "["
 
 ARG_SEP = ";"
@@ -68,44 +67,9 @@ def move_cursor(direction: CursorDirection, n: int = 1):
 def set_cursor_position(row: int = 1, col: int = 1):
     print_raw(CSI + str(row) + ARG_SEP + str(col) + "H")
 
+
 def set_cursor_column(col: int = 1):
-    print_raw(CSI + str(col) + 'G')
-
-def get_cursor_position() -> tuple[int, int]:
-
-    print_raw(CSI + "6n")
-
-    esc = getch()
-    if esc != ESCAPE:
-        elog("Expected escape char, got", ord(esc))
-        return (-1, -1)
-    elog("Grabbed escape")
-
-    bracket = getch()
-
-    if bracket != "[":
-        elog("Expected left bracket, got", ord(bracket))
-        return (-1, -1)
-
-    elog("Grabbed bracket")
-
-    n = getch()
-    curr = getch()
-    while curr != ";":
-        n += curr
-        curr = getch()
-
-    elog("Parsed n", n)
-
-    m = getch()
-    curr = getch()
-    while curr != "R":
-        m += curr
-        curr = getch()
-
-    elog("parsed m", m)
-
-    return (int(n), int(m))
+    print_raw(CSI + str(col) + "G")
 
 
 def get_terminal_size() -> tuple[int, int]:

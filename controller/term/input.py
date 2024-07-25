@@ -2,6 +2,7 @@ import sys
 import threading
 import string
 from typing import Callable
+import termios
 
 from .. import term
 from ..logging import elog
@@ -10,7 +11,8 @@ from ..logging import elog
 class __InputThread(threading.Thread):
 
     def __init__(self):
-        super().__init__(name="ECLInputT", daemon=False)
+        super().__init__(name="ECLInputT", daemon=True)
+        self.quit_event = threading.Event()
 
         try:
             import msvcrt
@@ -27,7 +29,7 @@ class __InputThread(threading.Thread):
         from ..interface import interface
 
         c = None
-        while True:
+        while not self.quit_event.is_set():
             c = self.getch()
             if c == term.ESCAPE:
                 # read bracket
@@ -43,9 +45,11 @@ class __InputThread(threading.Thread):
                 var = var.split(";")
             else:
                 interface.input_event(c)
+        elog("Exited input loop")
 
-    def __cleanup(self):
-
+    def stop(self):
+        elog("Stopping input thread")
+        self.quit_event.set()
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, self.__og_tcs)
 
 
