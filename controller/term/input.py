@@ -1,8 +1,8 @@
-import sys
-import threading
 import string
-from typing import Callable
+import sys
 import termios
+import threading
+from typing import Callable
 
 from .. import term
 from ..logging import elog
@@ -22,7 +22,8 @@ class __InputThread(threading.Thread):
         except ImportError:
             import tty
 
-            self.__og_tcs = tty.setcbreak(sys.stdin.fileno(), when=termios.TCSANOW)
+            self.__og_tcs = termios.tcgetattr(sys.stdin.fileno())
+            tty.setcbreak(sys.stdin.fileno(), when=termios.TCSANOW)
             self.getch = lambda: sys.stdin.read(1)
 
     def run(self):
