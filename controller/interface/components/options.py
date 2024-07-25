@@ -25,17 +25,13 @@ def DrawOptionList(
     # figure out if we would need to scroll
     if len(options) > rows_avail:
         # see if we have enough to scroll
-        
-
-
+        pass
 
     i = 0
     # listen for up down keys
     while True:
         # renderer
         term.save_cursor_position()
-
-
 
         for ind, opt in enumerate(options):
             term.print_raw(
