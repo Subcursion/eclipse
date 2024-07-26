@@ -3,7 +3,6 @@ import sys
 import termios
 import typing
 
-from ..logging import elog
 from ..types import ANSI_Enum
 
 ESCAPE = "\x1b"

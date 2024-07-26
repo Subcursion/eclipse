@@ -3,9 +3,11 @@ import sys
 import termios
 import threading
 from typing import Callable
+import logging
 
 from .. import term
-from ..logging import elog
+
+logger = logging.getLogger()
 
 
 class __InputThread(threading.Thread):
@@ -46,10 +48,10 @@ class __InputThread(threading.Thread):
                 var = var.split(";")
             else:
                 interface.input_event(c)
-        elog("Exited input loop")
+        logger.error("Exited input loop")
 
     def stop(self):
-        elog("Stopping input thread")
+        logger.error("Stopping input thread")
         self.quit_event.set()
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, self.__og_tcs)
 
