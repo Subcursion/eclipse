@@ -17,16 +17,16 @@ logger = logging.getLogger(__name__)
 
 art = """
  ,_     _
- |/_,-~/
+ |\\\\_,-~/
  / _  _ |    ,--.
 (  @  @ )   / ,-'
- /  _T_/-._( (
- /         `. /
-|         _  / |
- / / ,  /      |
-  || |-_/__   /
+ \\  _T_/-._( (
+ /         `. \\
+|         _  \\ |
+ \\ \\ ,  /      |
+  || |-_\\__   /
  ((_/`(____,-'
- """
+ """.rstrip()
 
 if __name__ == "__main__":
     from .interface import interface
@@ -57,10 +57,20 @@ if __name__ == "__main__":
         )
         main_menu.add_panel(
             LabelPanel(
-                AnchoredRect(1 / 3, 0, 1 / 3, 1, offset_y=1, offset_height=-1),
+                AnchoredRect(
+                    1 / 3 + (1 / 6),
+                    0,
+                    1 / 3,
+                    1,
+                    offset_x=-8,
+                    offset_y=1,
+                    offset_height=-1,
+                ),
                 art,
                 wrap=False,
                 line_stripping=False,
+                vertical_alignment=TextAlignment.Start,
+                horizontal_alignemnt=TextAlignment.Start,
             )
         )
         main_menu.add_panel(

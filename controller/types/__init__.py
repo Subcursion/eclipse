@@ -73,20 +73,16 @@ class AnchoredRect(Rect):
 
     @property
     def x(self):
-        logger.debug("Referencing x")
         return round((self._interface.size[1] - 1) * self._x) + 1 + self.offset_x
 
     @property
     def y(self):
-        logger.debug("Referencing y")
         return round((self._interface.size[0] - 1) * self._y) + 1 + self.offset_y
 
     @property
     def width(self):
-        logger.debug("Referencing width")
         return int((self._interface.size[1]) * self._width) + self.offset_width
 
     @property
     def height(self):
-        logger.debug("Referencing height")
         return int((self._interface.size[0]) * self._height) + self.offset_height
