@@ -1,9 +1,8 @@
+import logging
 import string
 import sys
 import termios
 import threading
-from typing import Callable
-import logging
 
 from .. import term
 

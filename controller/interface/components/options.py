@@ -1,5 +1,5 @@
-from typing import Callable
 import string
+from typing import Callable
 
 from ... import term
 from ...term import color

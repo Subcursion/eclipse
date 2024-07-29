@@ -1,14 +1,6 @@
-from typing import Callable
-import threading
-from datetime import timedelta, datetime
-import random
-
-from ...term.input import InputListener
-from ...term import print_raw
-from ...term import color, set_cursor_position
-from ...term.style import Style
-
-from ..structs import Rect
+import controller.term as term
+from controller.term.input import InputListener
+from controller.types import Rect
 
 
 class Renderable:
@@ -23,9 +15,6 @@ class Panel(Renderable, InputListener):
 
     def __init__(self, transform: Rect):
         self.transform = transform
-
-    def check_for_render(self):
-        pass
 
     def render(self):
         pass
@@ -53,7 +42,7 @@ class Pane(Renderable, InputListener):
 
     def render(self):
         for panel in self.__panels:
-            set_cursor_position(panel.transform.x, panel.transform.y)
+            term.set_cursor_position(panel.transform.x, panel.transform.y)
             panel.render()
 
     def input_event(self, input):

@@ -1,14 +1,11 @@
-import random
 import logging
 import threading
 import time
 
-from .. import term
-from ..term import input
-from ..term.color import fg_color, reset, sgr
+import controller.term as term
+from controller.term.input import InputListener
 
-from .components import Pane, Panel, Renderable
-from ..term.input import InputListener
+from .components import Pane, Renderable
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +19,7 @@ class __Interface(Renderable, InputListener):
 
         def __resized(size: tuple[int, int]):
             self.__size = size
+            self.render_event.set()
 
         term.add_resize_listener(__resized)
 
@@ -35,6 +33,7 @@ class __Interface(Renderable, InputListener):
         term.erase_display(term.EraseMode.All)
         term.set_cursor_position(1, 1)
         term.set_cursor_visible(False)
+        self.__size = term.get_terminal_size()
 
     def restore_screen(self):
         logger.error("Restoring screen")
@@ -70,6 +69,7 @@ class __Interface(Renderable, InputListener):
                     pane.render()
                 self.render_event.clear()
             else:
+                time.sleep(0.01)  # do this to not hog CPU
                 if self.should_rerender():
                     self.render_event.set()
 
