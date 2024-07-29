@@ -19,7 +19,8 @@ class __Interface(Renderable, InputListener):
 
         def __resized(size: tuple[int, int]):
             self.__size = size
-            self.render_event.set()
+            logger.debug("Interface resizer called")
+            self.request_rerender()
 
         term.add_resize_listener(__resized)
 
@@ -28,7 +29,6 @@ class __Interface(Renderable, InputListener):
         return self.__size
 
     def setup_screen(self):
-        logger.error("Setting up screen")
         term.use_alternate_screen_buffer(True)
         term.erase_display(term.EraseMode.All)
         term.set_cursor_position(1, 1)
@@ -36,7 +36,6 @@ class __Interface(Renderable, InputListener):
         self.__size = term.get_terminal_size()
 
     def restore_screen(self):
-        logger.error("Restoring screen")
         term.erase_display(term.EraseMode.All)
         term.use_alternate_screen_buffer(False)
         term.set_cursor_visible(True)
@@ -60,6 +59,9 @@ class __Interface(Renderable, InputListener):
             if pane.should_rerender():
                 return True
         return False
+
+    def request_rerender(self) -> None:
+        self.render_event.set()
 
     def render(self):
         while True:

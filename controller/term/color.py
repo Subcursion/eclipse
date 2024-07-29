@@ -1,6 +1,10 @@
+import logging
+
 from ..types import ANSI_Enum
 from . import ARG_SEP, CSI
 from .style import Style
+
+logger = logging.getLogger(__name__)
 
 BIT_8 = "5"
 BIT_24 = "2"
@@ -53,7 +57,7 @@ UNDERLINE_DEFAULT = "59"
 
 
 def sgr(*n: str | Color_4Bit | Style | list[str | Color_4Bit | Style]) -> str:
-    return (
+    res = (
         CSI
         + ARG_SEP.join(
             [
@@ -63,22 +67,16 @@ def sgr(*n: str | Color_4Bit | Style | list[str | Color_4Bit | Style]) -> str:
         )
         + "m"
     )
+    # logger.debug("SGR: %s", res.encode(), stack_info=True)
+    return res
 
 
 def reset() -> str:
     return str(Style.RESET)
 
 
-def fg_4bit(fg: Color_4Bit) -> str:
-    return str(fg)
-
-
-def bg_4bit(bg: Color_4Bit) -> str:
-    return str(bg)
-
-
-def color_4bit(fg, bg) -> str:
-    return str(fg) + ARG_SEP + str(bg)
+def color_4bit(*args: Color_4Bit) -> str:
+    return ARG_SEP.join(args)
 
 
 def fg_8bit(n) -> str:
@@ -94,7 +92,7 @@ def underline_8bit(n) -> str:
 
 
 def color_8bit(fgn, bgn) -> str:
-    return fg_8bit(fgn) + bg_8bit(bgn)
+    return fg_8bit(fgn) + ARG_SEP + bg_8bit(bgn)
 
 
 def fg_color(r, g, b) -> str:
@@ -123,6 +121,10 @@ def bg_color(r, g, b) -> str:
         + ARG_SEP
         + str(b)
     )
+
+
+def set_color(fg: tuple[int, int, int], bg: tuple[int, int, int]):
+    return fg_color(*fg) + ARG_SEP + bg_color(*bg)
 
 
 def underline_color(r, g, b) -> str:

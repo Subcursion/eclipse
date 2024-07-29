@@ -44,13 +44,13 @@ class __InputThread(threading.Thread):
                 while c not in string.ascii_uppercase:
                     var += c
                     c = self.getch()
-                var = var.split(";")
+                interface.input_event(term.ESCAPE + b + var + c)
             else:
                 interface.input_event(c)
         logger.error("Exited input loop")
 
     def stop(self):
-        logger.error("Stopping input thread")
+        logger.debug("Stopping input thread")
         self.quit_event.set()
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, self.__og_tcs)
 

@@ -2,6 +2,10 @@ import controller.term as term
 from controller.term.input import InputListener
 from controller.types import Rect
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class Renderable:
     def render(self):
@@ -42,7 +46,7 @@ class Pane(Renderable, InputListener):
 
     def render(self):
         for panel in self.__panels:
-            term.set_cursor_position(panel.transform.x, panel.transform.y)
+            term.set_cursor_position(panel.transform.y, panel.transform.x)
             panel.render()
 
     def input_event(self, input):

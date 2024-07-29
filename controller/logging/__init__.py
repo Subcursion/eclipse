@@ -9,11 +9,19 @@ __norm_fmt = "%(levelname)s|%(asctime)s:%(message)s"
 
 logging_config = {
     "version": 1,
+    "formatters": {
+        "debug": {
+            "format": "%(levelname)s|%(threadName)s@%(asctime)s|"
+            + "%(pathname)s:%(lineno)s|%(funcName)s:%(message)s"
+        },
+        "shortened": {"format": "%(levelname)s|%(asctime)s:%(message)s"},
+    },
     "handlers": {
-        "nooutput": {
+        "default": {
             "class": "logging.NullHandler",
             "level": logging.DEBUG,
+            "formatter": "debug",
         }
     },
-    "root": {"level": logging.DEBUG, "handlers": ["nooutput"]},
+    "root": {"level": logging.DEBUG, "handlers": ["default"]},
 }

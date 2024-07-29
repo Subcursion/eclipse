@@ -14,6 +14,12 @@ __resize_listeners: list[typing.Callable[[tuple[int, int]], None]] = []
 
 __old_handler = None
 
+ENTER = "\n"
+UP_ARROW = "\x1b[A"
+DOWN_ARROW = "\x1b[B"
+LEFT_ARROW = "\x1b[D"
+RIGHT_ARROW = "\x1b[C"
+
 
 def __handle_sigwinch(signum, frame):
     if __old_handler:
@@ -60,6 +66,8 @@ class CursorDirection(ANSI_Enum):
 
 
 def move_cursor(direction: CursorDirection, n: int = 1):
+    if n == 0:
+        return
     print_raw(CSI + str(n) + direction)
 
 
