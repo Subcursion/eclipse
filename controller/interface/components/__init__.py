@@ -1,10 +1,18 @@
+from enum import Flag, auto
+
 import controller.term as term
 from controller.term.input import InputListener
 from controller.types import Rect
 
+
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+class VisibilityRules:
+    Optional = (auto(),)
+    Required = (auto(),)
 
 
 class Renderable:
@@ -13,6 +21,9 @@ class Renderable:
 
     def should_rerender(self) -> bool:
         return False
+
+    def cleanup(self) -> None:
+        pass
 
 
 class Panel(Renderable, InputListener):

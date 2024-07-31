@@ -16,6 +16,7 @@ class __Interface(Renderable, InputListener):
         self.__size = (0, 0)
         self.render_event = threading.Event()
         self.render_event.set()
+        self.keep_rendering = True
 
         def __resized(size: tuple[int, int]):
             self.__size = size
@@ -63,8 +64,15 @@ class __Interface(Renderable, InputListener):
     def request_rerender(self) -> None:
         self.render_event.set()
 
+    def stop_rendering(self) -> None:
+        self.keep_rendering = False
+        # tell all children to clean up
+        for pane in self.__panes:
+            pane.cleanup()
+        self.cleanup()
+
     def render(self):
-        while True:
+        while self.keep_rendering:
             if self.render_event.is_set():
                 term.erase_display(term.EraseMode.All)
                 for pane in self.__panes:

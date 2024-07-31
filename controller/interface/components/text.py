@@ -86,8 +86,6 @@ def fitText(
         # remove extra lines that don't fit
         lines = lines[: rect.height]
 
-    logger.debug("\n".join(lines))
-
     return lines
 
 
@@ -156,7 +154,6 @@ class LabelPanel(Panel):
 
         # per row horixontal alignment
         for line in lines:
-            logger.debug("LINE(%d):%s", self.transform.x, line.encode())
             term.set_cursor_column(self.transform.x)
             if self.horizontal_alignemnt == TextAlignment.Middle:
                 term.move_cursor(

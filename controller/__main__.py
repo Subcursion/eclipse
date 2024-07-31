@@ -26,7 +26,9 @@ art = """
  \\ \\ ,  /      |
   || |-_\\__   /
  ((_/`(____,-'
- """.rstrip()
+ """.strip(
+    "\n"
+)
 
 if __name__ == "__main__":
     from .interface import interface
@@ -80,7 +82,7 @@ if __name__ == "__main__":
                     ("Agent Builder", lambda: None),
                     ("Connections", view_connections),
                     ("Settings", lambda: None),
-                    ("Quit", lambda: KeyboardInterrupt()),
+                    ("Quit", lambda: interface.stop_rendering()),
                 ],
             )
         )
