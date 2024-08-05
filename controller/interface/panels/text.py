@@ -15,6 +15,12 @@ from . import Panel
 logger = logging.getLogger(__name__)
 
 
+def escape(text: str):
+    text = re.sub(r"\n", "\\n", text)
+    text = re.sub(r"\t", "\\t", text)
+    return text
+
+
 def fitText(
     text: str,
     rect: Rect,
@@ -32,7 +38,7 @@ def fitText(
         # convert new lines to seperate lines
         pre_lines = text.split("\n")
     else:
-        pre_lines = [text]
+        pre_lines = [escape(text)]
 
     lines = []
     # for each line, see if it would fit
@@ -46,15 +52,12 @@ def fitText(
 
             # go back until a whitespace is found we can break on
             i = rect.width
-            logger.error("Initial check char: %s", line[i])
             # edge case: we landed on a character but the next character is whitespace
             # we are already guaranteed to have at least one more character available
             if line[i] in string.whitespace:
-                logger.error("Next character is WS, adding %s", line[:i])
                 lines.append(line[:i])
                 while i < len(line) and line[i] in string.whitespace:
                     i += 1
-                logger.error("Queueing: %s", line[i:])
                 pre_lines.insert(line_i + 1, line[i:])
                 continue
             # can't fit line, move cursor back until we find whitespace
@@ -63,28 +66,31 @@ def fitText(
 
             if i == -1:
                 # no breakable characters, just add what we can as a line
-                lines.append(line[: rext.width])
+                lines.append(line[: rect.width])
                 pre_lines.insert(line_i + 1, line[rect.width :])
                 continue
-            logger.error("Adding: %s", line[:i])
             lines.append(line[:i])
             # move i forward until none whitespace
             while i < len(line) and line[i] in string.whitespace:
                 i += 1
-            logger.error("Queing: %s", line[i:])
             pre_lines.insert(line_i + 1, line[i:])
-            logger.error("Lines status: %s", lines)
 
     else:
         lines = pre_lines
 
-    # before truncation, add ellipsis to last line
-    if len(lines) > rect.height:
-        if overflow_ellipsis:
-            line = lines[rect.height - 1]
-            lines[rect.height - 1] = line[: min(len(line), rect.width - 3)] + "..."
-        # remove extra lines that don't fit
-        lines = lines[: rect.height]
+    # for any lines that are longer than the available space, truncate.
+    # or if it's the last line and there is more lines, truncate appropiate
+    for line_i, line in enumerate(lines):
+        if line_i > rect.height:
+            break
+        if len(line) > rect.width or (
+            line_i == rect.height - 1 and len(lines) > rect.height
+        ):
+            if overflow_ellipsis:
+                lines[line_i] = line[: min(len(line), rect.width - 3)] + "..."
+            else:
+                lines[line_i] = line[: rect.width]
+    lines = lines[: rect.height]
 
     return lines
 

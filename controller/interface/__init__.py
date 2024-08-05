@@ -5,7 +5,7 @@ import time
 import controller.term as term
 from controller.term.input import InputListener
 
-from .components import Pane, Renderable
+from .panels import Pane, Renderable
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,6 @@ class __Interface(Renderable, InputListener):
 
         def __resized(size: tuple[int, int]):
             self.__size = size
-            logger.debug("Interface resizer called")
             self.request_rerender()
 
         term.add_resize_listener(__resized)
