@@ -1,9 +1,14 @@
+import logging
+
 from . import Panel, Rect
 from .util import draw_frame
 from .text import fitText
 
+
 from controller.logging import alerts
 from controller import term
+
+logger = logging.getLogger(__name__)
 
 
 class AlertPanel(Panel):

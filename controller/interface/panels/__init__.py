@@ -1,7 +1,7 @@
 from enum import Flag, auto
 import logging
 
-import controller.term as term
+from controller import term
 from controller.term.input import InputListener
 from controller.types import Rect
 
@@ -22,8 +22,9 @@ class Renderable:
 
 class Panel(Renderable, InputListener):
 
-    def __init__(self, transform: Rect):
+    def __init__(self, transform: Rect, clear: bool = True):
         self.transform = transform
+        self.clear = clear
 
     def render(self):
         pass
@@ -56,6 +57,12 @@ class Pane(Renderable, InputListener):
     def render(self):
         for panel in self.__panels:
             term.set_cursor_position(panel.transform.y, panel.transform.x)
+            if panel.clear:
+                for y in range(panel.transform.height):
+                    term.print_raw(" " * panel.transform.width)
+                    term.move_cursor(term.CursorDirection.Down)
+                    term.set_cursor_column(panel.transform.x)
+                term.set_cursor_position(panel.transform.y, panel.transform.x)
             panel.render()
 
     def input_event(self, input):

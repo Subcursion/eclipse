@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 def escape(text: str):
-    text = re.sub(r"\n", "\\n", text)
-    text = re.sub(r"\t", "\\t", text)
+    text = re.sub(r"\n", r"\\n", text)
+    text = re.sub(r"\t", r"\\t", text)
     return text
 
 

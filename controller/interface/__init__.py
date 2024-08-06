@@ -40,13 +40,17 @@ class __Interface(Renderable, InputListener):
         term.use_alternate_screen_buffer(False)
         term.set_cursor_visible(True)
 
-    def push_pane(self) -> Pane:
-        p = Pane()
-        self.__panes.append(p)
-        return p
+    def push_pane(self, pane: Pane = None) -> Pane:
+        if pane is None:
+            pane = Pane()
+        self.__panes.append(pane)
+        self.request_rerender()
+        return pane
 
     def pop_pane(self) -> Pane:
-        return self.__panes.pop()
+        _p = self.__panes.pop()
+        self.request_rerender()
+        return _p
 
     def input_event(self, input: str):
         if len(self.__panes) == 0:

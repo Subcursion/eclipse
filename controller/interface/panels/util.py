@@ -4,7 +4,7 @@ from controller import term
 
 
 def draw_frame(rect: Rect, title: str | None = None):
-
+    title = f" {title} "
     dashes_before = (rect.width - 2) // 8
     dashes_after = (rect.width - 2 - dashes_before) - len(title)
 

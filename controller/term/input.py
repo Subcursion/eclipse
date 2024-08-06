@@ -33,20 +33,21 @@ class __InputThread(threading.Thread):
         c = None
         while not self.quit_event.is_set():
             c = self.getch()
-            if c == term.ESCAPE:
+            while c == term.ESCAPE:
                 # read bracket
                 b = self.getch()
                 if b != "[":
-                    pass
+                    c += b
+                    break
                 # read until a capital letter
                 c = self.getch()
                 var = ""
-                while c not in string.ascii_uppercase:
+                while c not in string.ascii_letters:
                     var += c
                     c = self.getch()
                 interface.input_event(term.ESCAPE + b + var + c)
-            else:
-                interface.input_event(c)
+                c = self.getch()
+            interface.input_event(c)
         logger.error("Exited input loop")
 
     def stop(self):

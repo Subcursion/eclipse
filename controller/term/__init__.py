@@ -19,6 +19,7 @@ UP_ARROW = "\x1b[A"
 DOWN_ARROW = "\x1b[B"
 LEFT_ARROW = "\x1b[D"
 RIGHT_ARROW = "\x1b[C"
+BACKSPACE = "\x7f"
 
 
 def __handle_sigwinch(signum, frame):
